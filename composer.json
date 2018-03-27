@@ -36,7 +36,10 @@
             "iumioFramework\\": "vendor/iumio/iumio-framework",
             "ManagerApp\\": "vendor/iumio/iumio-framework/BaseApps/ManagerApp",
             "FServiceApp\\": "vendor/iumio/iumio-framework/BaseApps/FServiceApp",
-            "iumioFramework\\Units\\": "vendor/iumio/iumio-framework/Units"
+            "iumioFramework\\Units\\": "vendor/iumio/iumio-framework/Units",
+            "iumioFramework\\Masters\\": "vendor/iumio/iumio-framework/Core/Masters",
+            "iumioFramework\\Base\\Renderer\\": "vendor/iumio/iumio-framework/Core/Base/Renderer",
+            "iumioFramework\\Exception\\Tools\\": "vendor/iumio/iumio-framework/Core/Exception/Tools"
         }
     },
     "autoload-dev": {
