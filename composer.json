@@ -1,0 +1,69 @@
+{
+    "name": "iumio/iumio-framework-se",
+    "license": "MIT",
+    "type": "project",
+    "description": "The Standard Edition of iumio Framework. Let's create more simply",
+    "keywords": [
+        "php-framework",
+        "iumio-framework",
+        "components",
+        "php7",
+        "namespaces",
+        "mvc-architecture",
+        "edition",
+        "standard"
+    ],
+    "homepage": "https://framework.iumio.com",
+    "authors": [
+        {
+            "name": "Dany Rafina",
+            "email": "dany.rafina@iumio.com",
+            "homepage": "https://www.linkedin.com/in/dany-rafina/",
+            "role": "iumio Framework Architect / iumio Founder "
+        },
+        {
+            "name": "Kevin Huron",
+            "email": "kevin.huron@iumio.com",
+            "homepage": "http://kevinhuron.fr",
+            "role": "iumio Framework Co-Architect / iumio Co-Founder"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "iumioFramework\\Apps\\": "apps",
+            "iumioFramework\\Bin\\": "bin",
+            "iumioFramework\\Composer\\": "bin/Composer",
+            "iumioFramework\\": "vendor/iumio/iumio-framework",
+            "ManagerApp\\": "vendor/iumio/iumio-framework/BaseApps/ManagerApp",
+            "FServiceApp\\": "vendor/iumio/iumio-framework/BaseApps/FServiceApp",
+            "iumioFramework\\Units\\": "vendor/iumio/iumio-framework/Units"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "": "apps"
+        }
+    },
+    "scripts": {
+        "post-update-cmd": "iumioFramework\\Composer\\Installer::postUpdate",
+        "post-install-cmd": [
+            "iumioFramework\\Composer\\Installer::postUpdate"
+        ]
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/iumio/framework-internal-server"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "iumio/iumio-framework": "0.*",
+        "smarty/smarty": "~3.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.*",
+        "iumio/framework-internal-server": "2.*",
+        "iumio/framework-installer": "0.*"
+    }
+}
