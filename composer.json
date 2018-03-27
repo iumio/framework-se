@@ -33,18 +33,13 @@
             "iumioFramework\\Apps\\": "apps",
             "iumioFramework\\Bin\\": "bin",
             "iumioFramework\\Composer\\": "bin/Composer",
-            "iumioFramework\\": "vendor/iumio/iumio-framework",
             "ManagerApp\\": "vendor/iumio/iumio-framework/BaseApps/ManagerApp",
-            "FServiceApp\\": "vendor/iumio/iumio-framework/BaseApps/FServiceApp",
-            "iumioFramework\\Units\\": "vendor/iumio/iumio-framework/Units",
-            "iumioFramework\\Masters\\": "vendor/iumio/iumio-framework/Core/Masters",
-            "iumioFramework\\Base\\Renderer\\": "vendor/iumio/iumio-framework/Core/Base/Renderer",
-            "iumioFramework\\Exception\\Tools\\": "vendor/iumio/iumio-framework/Core/Exception/Tools"
+            "FServiceApp\\": "vendor/iumio/iumio-framework/BaseApps/FServiceApp"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "": "apps"
+            "\\": "apps"
         }
     },
     "scripts": {
