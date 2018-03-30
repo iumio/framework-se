@@ -42,12 +42,10 @@
   },
   "scripts": {
     "post-update-cmd": [
-      "iumioFramework\\Composer\\Installer::postUpdate",
-      "composer dump-autoload"
+      "iumioFramework\\Composer\\Installer::postUpdate"
     ],
     "post-install-cmd": [
-      "iumioFramework\\Composer\\Installer::postUpdate",
-      "composer dump-autoload"
+      "iumioFramework\\Composer\\Installer::postUpdate"
     ]
   },
   "repositories": [
