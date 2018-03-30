@@ -36,8 +36,8 @@
     }
   },
   "autoload-dev": {
-    "psr-4": {
-      "\\": "apps"
+    "psr-0": {
+      "": "apps/"
     }
   },
   "scripts": {
