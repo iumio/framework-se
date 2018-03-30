@@ -32,9 +32,7 @@
     "psr-4": {
       "iumioFramework\\Apps\\": "apps",
       "iumioFramework\\Bin\\": "bin",
-      "iumioFramework\\Composer\\": "bin/Composer",
-      "ManagerApp\\": "vendor/iumio/iumio-framework/BaseApps/ManagerApp",
-      "FServiceApp\\": "vendor/iumio/iumio-framework/BaseApps/FServiceApp"
+      "iumioFramework\\Composer\\": "bin/Composer"
     }
   },
   "autoload-dev": {
