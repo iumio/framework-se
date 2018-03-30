@@ -55,9 +55,3 @@ iumio Framework is an [iumio component][5], created by [RAFINA Dany][6] and co-f
 [5]: https://iumio.com
 [6]: https://www.linkedin.com/in/dany-rafina-672041b3/
 [7]: http://kevinhuron.fr/
-
-
-"scripts": {
-    "post-update-cmd": "iumioFramework\\Composer\\Installer::do",
-    "post-install-cmd": "iumioFramework\\Composer\\Installer::do"
-  },
