@@ -32,7 +32,8 @@
     "psr-4": {
       "iumioFramework\\Apps\\": "apps",
       "iumioFramework\\Bin\\": "bin",
-      "iumioFramework\\Composer\\": "bin/Composer"
+      "iumioFramework\\Composer\\": "bin/Composer",
+      "\\" : "apps"
     }
   },
   "autoload-dev": {
