@@ -289,3 +289,5 @@ iumio Framework, an iumio component [https://iumio.com]
 [0.3.6]: https://github.com/iumio-team/iumio-framework/releases/tag/v0.3.6
 [0.3.7]: https://github.com/iumio-team/iumio-framework/releases/tag/v0.3.7
 [0.3.8]: https://github.com/iumio-team/iumio-framework/releases/tag/v0.3.8
+
+<!--INITIALIUMIOFW-->
