@@ -1,33 +1,7 @@
 {
-  "name": "iumio/framework-se",
-  "license": "MIT",
+  "name": "{{ projectname }}",
+  "license": "proprietary",
   "type": "project",
-  "description": "The Standard Edition of iumio Framework. Let's create more simply",
-  "keywords": [
-    "php-framework",
-    "iumio-framework",
-    "components",
-    "php7",
-    "namespaces",
-    "mvc-architecture",
-    "edition",
-    "standard"
-  ],
-  "homepage": "https://framework.iumio.com",
-  "authors": [
-    {
-      "name": "Dany Rafina",
-      "email": "dany.rafina@iumio.com",
-      "homepage": "https://www.linkedin.com/in/dany-rafina/",
-      "role": "iumio Framework Architect / iumio Founder "
-    },
-    {
-      "name": "Kevin Huron",
-      "email": "kevin.huron@iumio.com",
-      "homepage": "http://kevinhuron.fr",
-      "role": "iumio Framework Co-Architect / iumio Co-Founder"
-    }
-  ],
   "autoload": {
     "psr-4": {
       "iumioFramework\\Apps\\": "apps",

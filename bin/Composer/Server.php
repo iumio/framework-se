@@ -16,7 +16,6 @@
 
 namespace iumioFramework\Composer;
 
-
 /**
  * Class Server
  * @package iumioFramework

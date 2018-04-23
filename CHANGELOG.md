@@ -12,6 +12,11 @@ iumio Framework, an iumio component [https://iumio.com]
 
 ## [BETA RELEASE]
 
+## [0.6.4] - 2018-04-23
+### Added
+- composer.json-dist
+- Change the composer.json to user proprietary
+- Fix PSR2 
 
 ## [0.6.0] - 2018-03-27
 ### Added

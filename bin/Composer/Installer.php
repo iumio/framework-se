@@ -13,10 +13,10 @@
  */
 
 namespace iumioFramework\Composer;
+
 use iumioFramework\Composer\Server as iSM;
 
 use Composer\Script\Event;
-
 
 /**
  * Class Installer
@@ -55,6 +55,7 @@ class Installer
         self::moveComponentsDownloadedByComposer();
         self::removeUncessaryFiles();
         self::createPersonalizedReadme();
+        self::changeComposerProprietary();
     }
 
 
@@ -63,61 +64,82 @@ class Installer
      * Move some components downloaded by composer to the correct location
      * @throws \Exception
      */
-    final public static function moveComponentsDownloadedByComposer() {
+    final public static function moveComponentsDownloadedByComposer()
+    {
         if (iSM::exist(self::$base_dir."vendor/components/font-awesome/")) {
-            iSM::move(self::$base_dir . "vendor/components/font-awesome/",
-                self::$base_dir . "public/components/libs/font-awesome/");
+            iSM::move(
+                self::$base_dir . "vendor/components/font-awesome/",
+                self::$base_dir . "public/components/libs/font-awesome/"
+            );
         }
         if (iSM::exist(self::$base_dir . "vendor/components/jquery/")) {
-            iSM::move(self::$base_dir . "vendor/components/jquery/",
-                self::$base_dir . "public/components/libs/jquery/");
+            iSM::move(
+                self::$base_dir . "vendor/components/jquery/",
+                self::$base_dir . "public/components/libs/jquery/"
+            );
         }
 
         if (iSM::exist(self::$base_dir . "vendor/daneden/animate.css/")) {
-            iSM::move(self::$base_dir . "vendor/daneden/animate.css/",
-                self::$base_dir . "public/components/libs/animate.css/");
+            iSM::move(
+                self::$base_dir . "vendor/daneden/animate.css/",
+                self::$base_dir . "public/components/libs/animate.css/"
+            );
         }
 
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/bootstrap/")) {
             // Move bootstrap assets to public libs directory
-            iSM::move(self::$base_dir . "vendor/iumio/framework-assets/bootstrap/",
-                self::$base_dir . "public/components/libs/bootstrap");
+            iSM::move(
+                self::$base_dir . "vendor/iumio/framework-assets/bootstrap/",
+                self::$base_dir . "public/components/libs/bootstrap"
+            );
         }
 
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/dwr/")) {
             // Move dwr-util assets to public libs directory
-            iSM::move(self::$base_dir . "vendor/iumio/framework-assets/dwr/",
-                self::$base_dir . "public/components/libs/dwr");
+            iSM::move(
+                self::$base_dir . "vendor/iumio/framework-assets/dwr/",
+                self::$base_dir . "public/components/libs/dwr"
+            );
         }
 
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/iumio-framework/")) {
             // Move framework assets to public libs directory
-            iSM::move(self::$base_dir . "vendor/iumio/framework-assets/iumio-framework/",
-                self::$base_dir . "public/components/libs/iumio-framework/");
+            iSM::move(
+                self::$base_dir . "vendor/iumio/framework-assets/iumio-framework/",
+                self::$base_dir . "public/components/libs/iumio-framework/"
+            );
         }
 
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/iumio-manager")) {
             // Move manager assets to public libs directory
-            iSM::move(self::$base_dir . "vendor/iumio/framework-assets/iumio-manager",
-                self::$base_dir . "public/components/libs/iumio-manager");
+            iSM::move(
+                self::$base_dir . "vendor/iumio/framework-assets/iumio-manager",
+                self::$base_dir . "public/components/libs/iumio-manager"
+            );
         }
 
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/mercure")) {
             // Move mercure assets to public libs directory
-            iSM::move(self::$base_dir . "vendor/iumio/framework-assets/mercure",
-                self::$base_dir . "public/components/libs/mercure");
+            iSM::move(
+                self::$base_dir . "vendor/iumio/framework-assets/mercure",
+                self::$base_dir . "public/components/libs/mercure"
+            );
         }
 
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/skel")) {
             // Move SKEL assets to public libs directory
-            iSM::move(self::$base_dir . "vendor/iumio/framework-assets/skel",
-                self::$base_dir . "public/components/libs/skel");
+            iSM::move(
+                self::$base_dir . "vendor/iumio/framework-assets/skel",
+                self::$base_dir . "public/components/libs/skel"
+            );
         }
 
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-installer/")) {
             // Move installer to public and rename it to setup
-            iSM::move(self::$base_dir . "vendor/iumio/framework-installer/",
-                self::$base_dir . "public/setup/");
+            iSM::move(
+                self::$base_dir . "vendor/iumio/framework-installer/",
+                self::$base_dir . "public/setup/"
+            );
         }
     }
 
@@ -188,7 +210,8 @@ class Installer
      * Remove uncessary file
      * @throws \Exception
      */
-    final public static function removeUncessaryFiles() {
+    final public static function removeUncessaryFiles()
+    {
         $rm = ["README.md", "CHANGELOG.md", "LICENSE"];
         foreach ($rm as $one) {
             if (iSM::exist(self::$base_dir.$one)) {
@@ -207,16 +230,35 @@ class Installer
      * @param string $path Path to directory
      * @return string The dir name
      */
-    final private static function getDirName(string $path):string {
+    final private static function getDirName(string $path):string
+    {
         $page_name = realpath($path);
         $each_page_name = explode('/', $page_name);
         return (end($each_page_name));
     }
 
+    /** Change the composer.json Proprietary
+     * @throws \Exception
+     */
+    final private static function changeComposerProprietary()
+    {
+        if (iSM::exist(self::$base_dir . "composer.json-dist")) {
+            $file = file_get_contents(self::$base_dir . "composer.json-dist");
+            if (false !== strpos($file, "{{ projectname }}")) {
+                $pname = strtolower(self::getDirName(self::$base_dir));
+                $file = str_replace("{{ projectname }}", $pname."/".$pname, $file);
+                file_put_contents(self::$base_dir . "composer.json-dist", $file);
+                iSM::delete(self::$base_dir . "composer.json", "file");
+                iSM::move(self::$base_dir . "composer.json-dist", self::$base_dir . "composer.json");
+            }
+        }
+    }
+
     /** Create a readme with project name and creation date
      * @throws \Exception
      */
-    final public static function createPersonalizedReadme() {
+    final public static function createPersonalizedReadme()
+    {
         $sentence = "\n----------------------------------\nMy iumio Framework project created ";
         if (!iSM::exist(self::$base_dir."README.md")) {
             $pname = self::getDirName(self::$base_dir);
@@ -225,15 +267,9 @@ class Installer
                 $date = $date->format("Y-m-d H:i:s");
                 $sentence = ucfirst($pname)." ".$sentence.$date;
                 file_put_contents(self::$base_dir."README.md", $sentence);
-            }
-            else {
+            } else {
                 throw new \Exception("Cannot create README.md");
             }
-
         }
     }
-
 }
-
-
-
