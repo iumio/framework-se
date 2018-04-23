@@ -14,6 +14,6 @@
 
 // Require the Framework Environment Dispatcher to set specific environment
 $frameworkEnv = require_once realpath(__DIR__
-    . '/../vendor/iumio/iumio-framework/Core/Requirement/Environment/FrameworkEnvironmentDispatcher.php');
+    . '/../vendor/iumio/framework/Core/Requirement/Environment/FrameworkEnvironmentDispatcher.php');
 
 \iumioFramework\Core\Requirement\Environment\FrameworkEnvironmentDispatcher::dispatch();
