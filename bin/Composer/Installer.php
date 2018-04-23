@@ -42,6 +42,9 @@ class Installer
         $composer = $event->getComposer();
         self::removeComponentsDir();
         self::moveComponentsDownloadedByComposer();
+        self::removeUncessaryFiles();
+        self::createPersonalizedReadme();
+        self::changeComposerProprietary();
     }
 
     /**
