@@ -15,6 +15,11 @@ gen
 .DS_Store
 #apps/*
 #elements/*
-#public/components/apps/*
-#public/components/baseapps/*
-
+public/components/apps/
+public/components/baseapps/
+public/components/libs/
+public/setup
+vendor
+elements/cache
+elements/compiled
+elements/logs

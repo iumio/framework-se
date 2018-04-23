@@ -46,7 +46,7 @@
       "iumioFramework\\Composer\\Installer::postUpdate"
     ],
     "post-install-cmd": [
-      "iumioFramework\\Composer\\Installer::postUpdate"
+      "iumioFramework\\Composer\\Installer::postInstall"
     ]
   },
   "repositories": [
@@ -56,7 +56,7 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0",
+    "php": ">=7.1",
     "iumio/iumio-framework": "0.*",
     "smarty/smarty": "~3.1"
   },

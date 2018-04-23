@@ -15,7 +15,7 @@
 namespace iumioFramework\Composer;
 use iumioFramework\Composer\Server as iSM;
 
-use  Composer\Script\Event;
+use Composer\Script\Event;
 
 
 /**
@@ -40,7 +40,21 @@ class Installer
     public static function postUpdate(Event $event)
     {
         $composer = $event->getComposer();
-        self::do();
+        self::removeComponentsDir();
+        self::moveComponentsDownloadedByComposer();
+    }
+
+    /**
+     * @param Event $event
+     * @throws \Exception
+     */
+    public static function postInstall(Event $event)
+    {
+        $composer = $event->getComposer();
+        self::removeComponentsDir();
+        self::moveComponentsDownloadedByComposer();
+        self::removeUncessaryFiles();
+        self::createPersonalizedReadme();
     }
 
 
@@ -51,8 +65,8 @@ class Installer
      */
     final public static function moveComponentsDownloadedByComposer() {
         if (iSM::exist(self::$base_dir."vendor/components/font-awesome/")) {
-        iSM::move(self::$base_dir . "vendor/components/font-awesome/",
-            self::$base_dir . "public/components/libs/font-awesome/");
+            iSM::move(self::$base_dir . "vendor/components/font-awesome/",
+                self::$base_dir . "public/components/libs/font-awesome/");
         }
         if (iSM::exist(self::$base_dir . "vendor/components/jquery/")) {
             iSM::move(self::$base_dir . "vendor/components/jquery/",
@@ -170,15 +184,55 @@ class Installer
         }
     }
 
-
     /**
-     * Init installer
+     * Remove uncessary file
      * @throws \Exception
      */
-    final public static function do() {
-        self::removeComponentsDir();
-        self::moveComponentsDownloadedByComposer();
+    final public static function removeUncessaryFiles() {
+        $rm = ["README.md", "CHANGELOG.md", "LICENSE"];
+        foreach ($rm as $one) {
+            if (iSM::exist(self::$base_dir.$one)) {
+                $file = file_get_contents(self::$base_dir . $one);
+                if (false !== strpos($file, "INITIALIUMIOFW") ||
+                    ("LICENSE" === $one &&
+                        false !== strpos($file, "Copyright (c) 2018 RAFINA DANY - iumio"))) {
+                    iSM::delete(self::$base_dir . $one, "file");
+                }
+            }
+        }
     }
+
+
+    /** Get only the directory name
+     * @param string $path Path to directory
+     * @return string The dir name
+     */
+    final private static function getDirName(string $path):string {
+        $page_name = realpath($path);
+        $each_page_name = explode('/', $page_name);
+        return (end($each_page_name));
+    }
+
+    /** Create a readme with project name and creation date
+     * @throws \Exception
+     */
+    final public static function createPersonalizedReadme() {
+        $sentence = "\n----------------------------------\nMy iumio Framework project created ";
+        if (!iSM::exist(self::$base_dir."README.md")) {
+            $pname = self::getDirName(self::$base_dir);
+            if (1 === iSM::create(self::$base_dir."README.md", "file")) {
+                $date = new \DateTime();
+                $date = $date->format("Y-m-d H:i:s");
+                $sentence = ucfirst($pname)." ".$sentence.$date;
+                file_put_contents(self::$base_dir."README.md", $sentence);
+            }
+            else {
+                throw new \Exception("Cannot create README.md");
+            }
+
+        }
+    }
+
 }
 
 
