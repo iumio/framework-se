@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  *
  *  * This is an iumio Framework component
@@ -13,7 +12,7 @@
  *
  */
 
-
+declare(strict_types=1);
 namespace iumioFramework\Composer;
 
 /**
@@ -29,51 +28,79 @@ class Server
     /** Create an element on the server
      * @param string $path Element Path
      * @param string $type Element type
-     * @return int Result
+     * @return bool Result
      * @throws \Exception Generate Error
      */
-    public static function create(string $path, string $type):int
+    public static function create(string $path, string $type): bool
     {
         try {
-            switch ($type) {
-                case "directory":
-                    if (!is_dir($path)) {
-                        mkdir($path);
-                    }
-                    break;
-                case "file":
-                    if (!is_file($path)) {
-                        touch($path);
-                    }
-                    break;
+            if ("directory" === $type && !is_dir($path)) {
+                return (mkdir($path));
+            } elseif ("file" === $type && !is_file($path)) {
+                return (touch($path));
             }
         } catch (\Exception $exception) {
-            throw new \Exception("Server Error : Cannot create $type element => ".$exception);
+            throw new \Exception("Server Error : Cannot create $type element => " . $exception);
         }
 
-        return (1);
+        return (false);
     }
 
     /** Move an element on the server
      * @param string $path Element Path
      * @param string $to Move to
      * @param bool $symlink Is symlink
-     * @return int Result
+     * @return bool Result
      * @throws \Exception Generate Error
      */
-    public static function move(string $path, string $to, bool $symlink = false):int
+    public static function move(string $path, string $to, bool $symlink = false): bool
     {
         try {
-            if ($symlink != false) {
-                symlink($path, $to);
-            } else {
-                rename($path, $to);
+            if (true === is_file($path)) {
+                return ((true === $symlink)? symlink($path, $to) : rename($path, $to));
+            }
+            elseif ($symlink && is_dir($path)) {
+                return (symlink($path, $to));
+            }
+            else {
+                return (self::recursiveMoveDir($path, $to));
             }
         } catch (\Exception $exception) {
-            throw new \Exception("Server Error : Cannot move $path to $to => ".$exception);
+            throw new \Exception("Server Error : Cannot move $path to $to => " . $exception);
+        }
+    }
+
+    /**
+     * Recursively move files from one directory to another
+     * @param string $src element source
+     * @param string $dest element destination
+     * @return bool
+     */
+    public static function recursiveMoveDir(string $src, string $dest):bool {
+
+        if (false === is_dir($src)) {
+            return (false);
+        }
+        elseif (false === is_dir($dest) && !mkdir($dest)) {
+            return (false);
         }
 
-        return (1);
+        $i = new \DirectoryIterator($src);
+        foreach ($i as $f) {
+            if ($f->isFile()) {
+                rename($f->getRealPath(), "$dest/" . $f->getFilename());
+            } elseif(!$f->isDot() && $f->isDir()) {
+                self::recursiveMoveDir($f->getRealPath(), "$dest/$f");
+                if (file_exists($f->getRealPath())) {
+                    unlink($f->getRealPath());
+                }
+                else {
+                    rmdir($f->getRealPath());
+                }
+
+            }
+        }
+        return (rmdir($src));
     }
 
 
@@ -82,123 +109,118 @@ class Server
      * @param string $to Move to
      * @param string $type Element type
      * @param bool $symlink Is symlink
-     * @return int Result
+     * @return bool Result
      * @throws \Exception Generate Error
      */
-    public static function copy(string $path, string $to, string $type, bool $symlink = false):int
+    public static function copy(string $path, string $to, string $type, bool $symlink = false): bool
     {
         try {
-            if ($symlink != false) {
-                @symlink($path, $to);
-            } elseif ($symlink == false && $type == "directory") {
+            if (false !== $symlink) {
+                return (@symlink($path, $to));
+            } elseif (false === $symlink && "directory" === $type) {
                 self::recursiveCopy($path, $to);
             } elseif ($symlink == false && $type == "file") {
                 copy($path, $to);
             } else {
-                throw new \Exception("Server Error on Copy: Element type is not regonized");
+                throw new \Exception("Server Error on Copy: Element type is not recognized");
             }
         } catch (\Exception $exception) {
-            throw new \Exception("Server Error : Cannot move $path to $to => ".$exception);
+            throw new \Exception("Server Error : Cannot move $path to $to => " . $exception);
         }
 
-        return (1);
+        return (false);
     }
 
     /** Check if an element existed on the server
      * @param string $path Element Path
      * @return bool If element exist
      */
-    public static function exist(string $path):bool
+    public static function exist(string $path): bool
     {
-        return (file_exists($path));
+        return (((true === is_link($path))? true : file_exists($path)));
     }
 
     /** Delete an element on the server
      * @param string $path Element Path
      * @param string $type Element type
-     * @return int Result
+     * @return bool Result
      * @throws \Exception Generate Error
      */
-    public static function delete(string $path, string $type):int
+    public static function delete(string $path, string $type): bool
     {
         try {
-            switch ($type) {
-                case "directory":
-                    if (is_link($path)) {
-                        unlink($path);
-                    } elseif (is_dir($path)) {
-                        try {
-                            self::recursiveRmdir($path);
-                        } catch (\Exception $e) {
-                            throw new \Exception("Server Manager delete error =>" . $e->getMessage());
-                        }
-                    }
-                    break;
-                case "file":
-                    if (is_link($path)) {
-                        unlink($path);
-                    } elseif (file($path)) {
-                        try {
-                            unlink($path);
-                        } catch (\Exception $e) {
-                            throw new \Exception("Server Manager delete error =>" . $e->getMessage());
-                        }
-                    }
-                    break;
+            if ("directory" === $type && is_link($path)) {
+                return (unlink($path));
+            } elseif ("directory" === $type && is_dir($path)) {
+                if (!self::isDirEmpty($path)) {
+                    self::recursiveRmdir($path);
+                } else {
+                    return (rmdir($path));
+                }
+            } elseif ("file" === $type) {
+                return (unlink($path));
             }
         } catch (\Exception $exception) {
-            throw new \Exception("Server Error : Cannot delete $type element => ".$exception);
+            throw new \Exception("Server Error : Cannot delete $type element => " . $exception);
         }
 
-        return (1);
+        return (false);
     }
 
     /** Recursive remove directory
      * @param string $dir dir path
+     * @return bool
      */
-    private static function recursiveRmdir(string $dir)
+    private static function recursiveRmdir(string $dir): bool
     {
         if (is_dir($dir)) {
             $objects = scandir($dir);
             foreach ($objects as $object) {
                 if ($object != "." && $object != "..") {
-                    if (filetype($dir."/".$object) == "dir") {
-                        self::recursiveRmdir($dir."/".$object);
+                    if (filetype($dir . "/" . $object) == "dir") {
+                        self::recursiveRmdir($dir . "/" . $object);
                     } else {
-                        unlink($dir."/".$object);
+                        if (false === unlink($dir . "/" . $object)) {
+                            return (false);
+                        }
                     }
                 }
             }
             reset($objects);
-            rmdir($dir);
+            return rmdir($dir);
         }
+        return (false);
     }
 
     /** Copy directory recursivly
      * @param string $src directory source
      * @param string $dst directory destination
+     * @return bool
      */
-    private static function recursiveCopy(string $src, string $dst)
+    private static function recursiveCopy(string $src, string $dst): bool
     {
         $dir = opendir($src);
         @mkdir($dst);
-        while (false !== ( $file = readdir($dir))) {
-            if (( $file != '.' ) && ( $file != '..' )) {
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
                 if (is_dir($src . '/' . $file)) {
-                    static::recursiveCopy($src . '/' . $file, $dst . '/' . $file);
+                    self::recursiveCopy($src . '/' . $file, $dst . '/' . $file);
                 } else {
-                    copy($src . '/' . $file, $dst . '/' . $file);
+                    if (false === copy($src . '/' . $file, $dst . '/' . $file)) {
+                        return (false);
+                    }
                 }
             }
         }
         closedir($dir);
+        return (true);
     }
 
     /** Check if element is readable
      * @param string $path Element path
      * @return bool Is element is readable or not
      */
-    public static function checkIsReadable(string $path):bool
+    public static function checkIsReadable(string $path): bool
     {
         return (is_readable($path));
     }
@@ -208,7 +230,7 @@ class Server
      * @param string $path Element path
      * @return bool Is element is executable or not
      */
-    public static function checkIsExecutable(string $path):bool
+    public static function checkIsExecutable(string $path): bool
     {
         return (is_executable($path));
     }
@@ -217,8 +239,22 @@ class Server
      * @param string $path Element path
      * @return bool Is element is writable or not
      */
-    public static function checkIsWritable(string $path):bool
+    public static function checkIsWritable(string $path): bool
     {
         return (is_writable($path));
+    }
+
+
+    /** Check if this dir is empty
+     * @param string $dir dir path
+     * @return bool
+     * @throws \Exception
+     */
+    public static function isDirEmpty(string $dir):bool
+    {
+        if (is_readable($dir)) {
+            return (2 == count(scandir($dir)));
+        }
+        throw new \Exception("Cannot determine if $dir dir is empty or not");
     }
 }

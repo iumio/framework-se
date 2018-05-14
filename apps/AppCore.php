@@ -55,9 +55,9 @@ class AppCore extends FrameworkCore
             );
         }
         $apps = array();
-        foreach ($classes as $class => $val) {
+        foreach ($classes as $val) {
             $val = (array)$val;
-            $apps[$val['name']] =  array("enabled" =>$val['enabled'],
+            $apps[$val['name']] =  array("enabled" => $val['enabled'],
                 "prefix" => (($val["prefix"] != "")? "/".$val["prefix"] : ""),  "appclass" => new $val['class']());
         }
         return $apps;
