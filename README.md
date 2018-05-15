@@ -24,7 +24,7 @@ Description
 Installation
 ------------
 
-* [Install iumio Framework][2] with github or directly download it in iumio Framework website (see
+* [Install iumio Framework][2] with composer (see
   [requirements details][3]).
 
 Documentation
@@ -43,7 +43,7 @@ We need any help to continue the framework development and create a new communit
 About Us
 --------
 
-iumio Framework is an [iumio component][5], created by [RAFINA Dany][6] and co-founded by [HURON Kevin][7]
+iumio Framework is a product by [iumio][5], created by [RAFINA Dany][6] and co-founded by [HURON Kevin][7]
 
 [1]: https://framework.iumio.com
 [2]: https://framework.iumio.com/SE/install
