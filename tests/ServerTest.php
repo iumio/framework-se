@@ -25,6 +25,13 @@ use iumioFramework\Composer\Server;
 class ServerTest extends TestCase
 {
 
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        @rmdir("iumio.testing.dir2");
+        @unlink("iumio.testing2.txt");
+    }
+
     /**
      * Test create element
      * @throws \Exception
@@ -111,6 +118,55 @@ class ServerTest extends TestCase
         mkdir($dir);
         // Move a directory (symlink)
         $this->assertEquals(true, Server::move($dir, "$dirbase/iumio.testing.dir2", true));
+        $this->assertEquals(true, Server::exist("$dirbase/iumio.testing.dir2/"));
+        Server::delete($dirbase, "directory");
+
+    }
+
+
+    /**
+     * Test move element
+     * @throws \Exception
+     */
+    public function testCopy()
+    {
+
+        $this->testCreate();
+        $base = getcwd().DIRECTORY_SEPARATOR;
+
+        $dirbase = $base."test.move.dir";
+        $this->rrmdir("test.move.dir");
+        if (true === file_exists("$dirbase/test.txt")) {
+            unlink("$dirbase/test.txt");
+        }
+        if (true === file_exists("$dirbase/test2.txt")) {
+            unlink("$dirbase/test2.txt");
+        }
+        if (true === file_exists("$dirbase/testing2")) {
+            unlink("$dirbase/test2.txt");
+        }
+        mkdir($dirbase);
+
+
+        // Move a file (not symlink)
+        $file = $base."iumio.testing.txt";
+        $this->assertEquals(true, Server::copy($file, "$dirbase/a.txt", "file",false));
+        $this->assertEquals(true, Server::exist("$dirbase/a.txt"));
+
+        // Move a file (symlink)
+        $file = $base."iumio.testing2.txt";
+        touch($file);
+        $this->assertEquals(true, Server::copy($file, "$dirbase/test2.txt", "file", true));
+        $this->assertEquals(true, Server::exist("$dirbase/test2.txt"));
+
+        // Move a directory (not symlink)
+        $dir = $base."iumio.testing.dir";
+        $this->assertEquals(true, Server::copy($dir, "$dirbase/iumio.testing.dir/", "directory", false));
+        $this->assertEquals(true, Server::exist("$dirbase/iumio.testing.dir/"));
+
+        $dir = $base."iumio.testing.dir2";
+        // Move a directory (symlink)
+        $this->assertEquals(true, Server::copy($dir, "$dirbase/iumio.testing.dir2", "directory", true));
         $this->assertEquals(true, Server::exist("$dirbase/iumio.testing.dir2/"));
         Server::delete($dirbase, "directory");
 

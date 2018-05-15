@@ -58,11 +58,9 @@ class Server
         try {
             if (true === is_file($path)) {
                 return ((true === $symlink)? symlink($path, $to) : rename($path, $to));
-            }
-            elseif ($symlink && is_dir($path)) {
+            } elseif ($symlink && is_dir($path)) {
                 return (symlink($path, $to));
-            }
-            else {
+            } else {
                 return (self::recursiveMoveDir($path, $to));
             }
         } catch (\Exception $exception) {
@@ -76,12 +74,12 @@ class Server
      * @param string $dest element destination
      * @return bool
      */
-    public static function recursiveMoveDir(string $src, string $dest):bool {
+    public static function recursiveMoveDir(string $src, string $dest):bool
+    {
 
         if (false === is_dir($src)) {
             return (false);
-        }
-        elseif (false === is_dir($dest) && !mkdir($dest)) {
+        } elseif (false === is_dir($dest) && !mkdir($dest)) {
             return (false);
         }
 
@@ -89,15 +87,13 @@ class Server
         foreach ($i as $f) {
             if ($f->isFile()) {
                 rename($f->getRealPath(), "$dest/" . $f->getFilename());
-            } elseif(!$f->isDot() && $f->isDir()) {
+            } elseif (!$f->isDot() && $f->isDir()) {
                 self::recursiveMoveDir($f->getRealPath(), "$dest/$f");
                 if (file_exists($f->getRealPath())) {
                     unlink($f->getRealPath());
-                }
-                else {
+                } else {
                     rmdir($f->getRealPath());
                 }
-
             }
         }
         return (rmdir($src));
@@ -106,26 +102,26 @@ class Server
 
     /** Copy an element on the server
      * @param string $path Element Path
-     * @param string $to Move to
+     * @param string $dest Move to
      * @param string $type Element type
      * @param bool $symlink Is symlink
      * @return bool Result
      * @throws \Exception Generate Error
      */
-    public static function copy(string $path, string $to, string $type, bool $symlink = false): bool
+    public static function copy(string $path, string $dest, string $type, bool $symlink = false): bool
     {
         try {
             if (false !== $symlink) {
-                return (@symlink($path, $to));
+                return (@symlink($path, $dest));
             } elseif (false === $symlink && "directory" === $type) {
-                self::recursiveCopy($path, $to);
+                return (self::recursiveCopy($path, $dest));
             } elseif ($symlink == false && $type == "file") {
-                copy($path, $to);
+                return (copy($path, $dest));
             } else {
                 throw new \Exception("Server Error on Copy: Element type is not recognized");
             }
         } catch (\Exception $exception) {
-            throw new \Exception("Server Error : Cannot move $path to $to => " . $exception);
+            throw new \Exception("Server Error : Cannot move $path to $dest => " . $exception);
         }
 
         return (false);
