@@ -34,10 +34,9 @@ class Installer
 
 
     /**
-     * @param Event $event
      * @throws \Exception
      */
-    public static function postUpdate(Event $event)
+    public static function postUpdate()
     {
         self::removeComponentsDir();
         self::moveComponentsDownloadedByComposer();
@@ -47,10 +46,9 @@ class Installer
     }
 
     /**
-     * @param Event $event
      * @throws \Exception
      */
-    public static function postInstall(Event $event)
+    public static function postInstall()
     {
         self::removeComponentsDir();
         self::moveComponentsDownloadedByComposer();

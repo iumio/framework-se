@@ -25,6 +25,10 @@ namespace iumioFramework\Composer;
  */
 class Server
 {
+    public const EXECUTABLE = 0;
+    public const READABLE = 1;
+    public const WRITABLE = 2;
+
     /** Create an element on the server
      * @param string $path Element Path
      * @param string $type Element type
@@ -48,23 +52,22 @@ class Server
 
     /** Move an element on the server
      * @param string $path Element Path
-     * @param string $to Move to
+     * @param string $dest Move to
      * @param bool $symlink Is symlink
      * @return bool Result
      * @throws \Exception Generate Error
      */
-    public static function move(string $path, string $to, bool $symlink = false): bool
+    public static function move(string $path, string $dest, bool $symlink = false): bool
     {
         try {
             if (true === is_file($path)) {
-                return ((true === $symlink)? symlink($path, $to) : rename($path, $to));
+                return ((true === $symlink)? symlink($path, $dest) : rename($path, $dest));
             } elseif ($symlink && is_dir($path)) {
-                return (symlink($path, $to));
-            } else {
-                return (self::recursiveMoveDir($path, $to));
+                return (symlink($path, $dest));
             }
+            return (self::recursiveMoveDir($path, $dest));
         } catch (\Exception $exception) {
-            throw new \Exception("Server Error : Cannot move $path to $to => " . $exception);
+            throw new \Exception("Server Error : Cannot move $path to $dest => " . $exception);
         }
     }
 
@@ -83,16 +86,16 @@ class Server
             return (false);
         }
 
-        $i = new \DirectoryIterator($src);
-        foreach ($i as $f) {
-            if ($f->isFile()) {
-                rename($f->getRealPath(), "$dest/" . $f->getFilename());
-            } elseif (!$f->isDot() && $f->isDir()) {
-                self::recursiveMoveDir($f->getRealPath(), "$dest/$f");
-                if (file_exists($f->getRealPath())) {
-                    unlink($f->getRealPath());
+        $elem = new \DirectoryIterator($src);
+        foreach ($elem as $file) {
+            if ($file->isFile()) {
+                rename($file->getRealPath(), "$dest/" . $file->getFilename());
+            } elseif (!$file->isDot() && $file->isDir()) {
+                self::recursiveMoveDir($file->getRealPath(), "$dest/$file");
+                if (file_exists($file->getRealPath())) {
+                    unlink($file->getRealPath());
                 } else {
-                    rmdir($f->getRealPath());
+                    rmdir($file->getRealPath());
                 }
             }
         }
@@ -123,8 +126,6 @@ class Server
         } catch (\Exception $exception) {
             throw new \Exception("Server Error : Cannot move $path to $dest => " . $exception);
         }
-
-        return (false);
     }
 
     /** Check if an element existed on the server
@@ -149,7 +150,26 @@ class Server
                 return (unlink($path));
             } elseif ("directory" === $type && is_dir($path)) {
                 if (!self::isDirEmpty($path)) {
-                    self::recursiveRmdir($path);
+                    $elem = function (string $dir) use ($path, &$elem) {
+                        if (is_dir($dir)) {
+                            $objects = scandir($dir);
+                            foreach ($objects as $object) {
+                                if ($object != "." && $object != "..") {
+                                    if (filetype($dir . "/" . $object) == "dir") {
+                                        $elem($dir . "/" . $object);
+                                    } else {
+                                        if (false === unlink($dir . "/" . $object)) {
+                                            return (false);
+                                        }
+                                    }
+                                }
+                            }
+                            reset($objects);
+                            return rmdir($dir);
+                        }
+                        return (false);
+                    };
+                    $elem($path);
                 } else {
                     return (rmdir($path));
                 }
@@ -163,30 +183,6 @@ class Server
         return (false);
     }
 
-    /** Recursive remove directory
-     * @param string $dir dir path
-     * @return bool
-     */
-    private static function recursiveRmdir(string $dir): bool
-    {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (filetype($dir . "/" . $object) == "dir") {
-                        self::recursiveRmdir($dir . "/" . $object);
-                    } else {
-                        if (false === unlink($dir . "/" . $object)) {
-                            return (false);
-                        }
-                    }
-                }
-            }
-            reset($objects);
-            return rmdir($dir);
-        }
-        return (false);
-    }
 
     /** Copy directory recursivly
      * @param string $src directory source
@@ -212,34 +208,25 @@ class Server
         return (true);
     }
 
-    /** Check if element is readable
+
+    /**
+     * Check if element is executable/Readable/writable
      * @param string $path Element path
-     * @return bool Is element is readable or not
+     * @param int $mode Mode (Server::EXECUTABLE, Server::READABLE, Server::WRITABLE)
+     * @return bool Is element is executable/Readable/writable or not
+     * @throws \Exception
      */
-    public static function checkIsReadable(string $path): bool
+    public static function checkIs(string $path, int $mode): bool
     {
-        return (is_readable($path));
+        if (0 === $mode) {
+            return (is_executable($path));
+        } elseif (1 === $mode) {
+            return (is_readable($path));
+        } elseif (2 === $mode) {
+            return (is_writable($path));
+        }
+        throw new \Exception("Server Error : Undefined Check is mode. Please set a existing mode");
     }
-
-
-    /** Check if element is executable
-     * @param string $path Element path
-     * @return bool Is element is executable or not
-     */
-    public static function checkIsExecutable(string $path): bool
-    {
-        return (is_executable($path));
-    }
-
-    /** Check if element is writable
-     * @param string $path Element path
-     * @return bool Is element is writable or not
-     */
-    public static function checkIsWritable(string $path): bool
-    {
-        return (is_writable($path));
-    }
-
 
     /** Check if this dir is empty
      * @param string $dir dir path
