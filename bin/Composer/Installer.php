@@ -14,9 +14,9 @@
 
 namespace iumioFramework\Composer;
 
-use iumioFramework\Composer\Server as iSM;
+require __DIR__."/../../vendor/autoload.php";
 
-use Composer\Script\Event;
+use iumioFramework\Composer\Server as iSM;
 
 /**
  * Class Installer
@@ -213,5 +213,6 @@ class Installer
             }
             throw new \Exception("Cannot create README.md");
         }
+        return (0);
     }
 }
