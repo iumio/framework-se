@@ -56,7 +56,7 @@
     }
   ],
   "require": {
-    "php": ">=7.1",
+    "php": ">=7.2",
     "iumio/framework": "0.*",
     "smarty/smarty": "~3.1"
   },
