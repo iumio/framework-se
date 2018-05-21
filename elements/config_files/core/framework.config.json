@@ -1,9 +1,9 @@
 {
     "edition_fullname": "Standard Edition",
     "edition_shortname": "SE",
-    "edition_stage": "BETA",
-    "edition_version": "0.6.6",
-    "edition_build": "201766",
+    "edition_stage": "RC",
+    "edition_version": "0.7.0",
+    "edition_build": "201770",
     "u3i": "createyoursecretu3i",
     "installation": null,
     "autowiring": true,
@@ -16,5 +16,6 @@
     "default_env": "dev",
     "api_auth_for": null,
     "deployment": null,
-    "location": null
+    "location": null,
+    "locale_enabled": false
 }
