@@ -34,7 +34,7 @@ class Installer
     /** After update
      * @throws \Exception
      */
-    public static function postUpdate()
+    public static function postEvent()
     {
         self::removeComponentsDir();
         self::moveComponentsDownloadedByComposer();
@@ -42,21 +42,6 @@ class Installer
         self::createPersonalizedReadme();
         self::changeComposerProprietary();
     }
-
-
-    /** After install
-     * @throws \Exception
-     */
-    public static function postInstall()
-    {
-        self::removeComponentsDir();
-        self::moveComponentsDownloadedByComposer();
-        self::removeUncessaryFiles();
-        self::createPersonalizedReadme();
-        self::changeComposerProprietary();
-    }
-
-
 
     /**
      * Move some components downloaded by composer to the correct location
@@ -252,17 +237,6 @@ class Installer
     }
 
 
-    /** Get only the directory name
-     * @param string $path Path to directory
-     * @return string The dir name
-     */
-    final private static function getDirName(string $path):string
-    {
-        $page_name = realpath($path);
-        $each_page_name = explode('/', $page_name);
-        return (end($each_page_name));
-    }
-
     /** Change the composer.json Proprietary
      * @throws \Exception
      */
@@ -271,7 +245,7 @@ class Installer
         if (iSM::exist(self::$base_dir . "composer.json-dist")) {
             $file = file_get_contents(self::$base_dir . "composer.json-dist");
             if (false !== strpos($file, "{{ projectname }}")) {
-                $pname = strtolower(self::getDirName(self::$base_dir));
+                $pname = strtolower(Server::getDirName(self::$base_dir));
                 $file = str_replace("{{ projectname }}", $pname."/".$pname, $file);
                 file_put_contents(self::$base_dir . "composer.json-dist", $file);
                 iSM::delete(self::$base_dir . "composer.json", "file");
@@ -287,7 +261,7 @@ class Installer
     {
         $sentence = "\n----------------------------------\nMy iumio Framework project created ";
         if (!iSM::exist(self::$base_dir."README.md")) {
-            $pname = self::getDirName(self::$base_dir);
+            $pname = Server::getDirName(self::$base_dir);
             if (1 === iSM::create(self::$base_dir."README.md", "file")) {
                 $date = new \DateTime();
                 $date = $date->format("Y-m-d H:i:s");
