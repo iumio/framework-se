@@ -62,7 +62,7 @@ class Installer
      * Move some components downloaded by composer to the correct location
      * @throws \Exception
      */
-    final public static function moveComponentsDownloadedByComposer()
+    final public static function moveComponentsDownloadedByComposer():void
     {
         if (iSM::exist(self::$base_dir."vendor/components/font-awesome/")) {
             iSM::move(
@@ -76,7 +76,6 @@ class Installer
                 self::$base_dir . "public/components/libs/jquery/"
             );
         }
-
         if (iSM::exist(self::$base_dir . "vendor/daneden/animate.css/")) {
             iSM::move(
                 self::$base_dir . "vendor/daneden/animate.css/",
@@ -84,6 +83,17 @@ class Installer
             );
         }
 
+        self::moveFrameworkComponents();
+        self::moveFrameworkAssets();
+    }
+
+
+    /**
+     * Move some components downloaded by composer to the correct location : framework assets
+     * @throws \Exception
+     */
+    final public static function moveFrameworkAssets():void
+    {
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/bootstrap/")) {
             // Move bootstrap assets to public libs directory
             iSM::move(
@@ -91,7 +101,6 @@ class Installer
                 self::$base_dir . "public/components/libs/bootstrap"
             );
         }
-
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/dwr/")) {
             // Move dwr-util assets to public libs directory
             iSM::move(
@@ -99,6 +108,21 @@ class Installer
                 self::$base_dir . "public/components/libs/dwr"
             );
         }
+        if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/skel")) {
+            // Move SKEL assets to public libs directory
+            iSM::move(
+                self::$base_dir . "vendor/iumio/framework-assets/skel",
+                self::$base_dir . "public/components/libs/skel"
+            );
+        }
+    }
+
+
+    /** Move the framework components
+     * @throws \Exception
+     */
+    final public static function moveFrameworkComponents():void
+    {
 
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/iumio-framework/")) {
             // Move framework assets to public libs directory
@@ -124,14 +148,6 @@ class Installer
             );
         }
 
-        if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/skel")) {
-            // Move SKEL assets to public libs directory
-            iSM::move(
-                self::$base_dir . "vendor/iumio/framework-assets/skel",
-                self::$base_dir . "public/components/libs/skel"
-            );
-        }
-
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-installer/")) {
             // Move installer to public and rename it to setup
             iSM::move(
@@ -153,26 +169,32 @@ class Installer
             iSM::delete(self::$base_dir . "public/components/libs/animate.css/", "directory");
         }
 
-        if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/bootstrap/")) {
-            // remove bootstrap assets to public directory
-            iSM::delete(self::$base_dir . "public/components/libs/bootstrap/", "directory");
-        }
-
-        if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/dwr/")) {
-            // remove dwr assets to public directory
-            iSM::delete(self::$base_dir . "public/components/libs/dwr/", "directory");
-        }
-
         if (iSM::exist(self::$base_dir."vendor/components/font-awesome/")) {
             // remove font-awesome assets to public directory
             iSM::delete(self::$base_dir . "public/components/libs/font-awesome/", "directory");
         }
-
         if (iSM::exist(self::$base_dir . "vendor/components/jquery/")) {
             // remove jquery assets to public directory
             iSM::delete(self::$base_dir . "public/components/libs/jquery/", "directory");
         }
 
+        if (!iSM::exist(self::$base_dir . "public/components/libs/")) {
+            // Create libs directory
+            iSM::create(self::$base_dir . "public/components/libs/", "directory");
+        }
+
+        self::removeFrameworkComponents();
+    }
+
+    /** Remove framework components
+     * @throws \Exception
+     */
+    public static function removeFrameworkComponents():void
+    {
+        if (iSM::exist(self::$base_dir . "vendor/iumio/framework-installer/")) {
+            // remove setup directory
+            iSM::delete(self::$base_dir . "public/setup", "directory");
+        }
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/iumio-framework")) {
             // remove framework assets to public libs directory
             iSM::delete(self::$base_dir . "public/components/libs/iumio-framework", "directory");
@@ -182,29 +204,31 @@ class Installer
             // remove manager assets to public libs directory
             iSM::delete(self::$base_dir . "public/components/libs/iumio-manager", "directory");
         }
-
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/mercure")) {
             // remove mercure assets to public libs directory
             iSM::delete(self::$base_dir . "public/components/libs/mercure", "directory");
         }
+    }
 
+    /** Remove framework assets
+     * @throws \Exception
+     */
+    public static function removeFrameworkAssets():void
+    {
+        if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/bootstrap/")) {
+            // remove bootstrap assets to public directory
+            iSM::delete(self::$base_dir . "public/components/libs/bootstrap/", "directory");
+        }
+
+        if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/dwr/")) {
+            // remove dwr assets to public directory
+            iSM::delete(self::$base_dir . "public/components/libs/dwr/", "directory");
+        }
         if (iSM::exist(self::$base_dir . "vendor/iumio/framework-assets/skel")) {
             // remove SKEL assets to public libs directory
             iSM::delete(self::$base_dir . "public/components/libs/skel", "directory");
         }
-
-        if (iSM::exist(self::$base_dir . "vendor/iumio/framework-installer/")) {
-            // remove setup directory
-            iSM::delete(self::$base_dir . "public/setup", "directory");
-        }
-
-        if (!iSM::exist(self::$base_dir . "public/components/libs/")) {
-            // Create libs directory
-            iSM::create(self::$base_dir . "public/components/libs/", "directory");
-        }
     }
-
-
 
     /**
      * Remove uncessary file
