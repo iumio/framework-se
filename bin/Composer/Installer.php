@@ -39,9 +39,9 @@ class Installer
         self::removeComponentsDir();
         self::moveComponentsDownloadedByComposer();
         self::removeUncessaryFiles();
-        self::createPersonalizedReadme();
-        self::changeComposerProprietary();
+        self::changeComposerProprietaryAndReadme();
     }
+
 
     /**
      * Move some components downloaded by composer to the correct location
@@ -237,40 +237,43 @@ class Installer
     }
 
 
+    /** Get only the directory name
+     * @param string $path Path to directory
+     * @return string The dir name
+     */
+    final public static function getDirName(string $path):string
+    {
+        $page_name = realpath($path);
+        $each_page_name = explode('/', $page_name);
+        return (end($each_page_name));
+    }
+
     /** Change the composer.json Proprietary
      * @throws \Exception
      */
-    final private static function changeComposerProprietary():void
+    final private static function changeComposerProprietaryAndReadme():void
     {
         if (iSM::exist(self::$base_dir . "composer.json-dist")) {
             $file = file_get_contents(self::$base_dir . "composer.json-dist");
             if (false !== strpos($file, "{{ projectname }}")) {
-                $pname = strtolower(Server::getDirName(self::$base_dir));
+                $pname = strtolower(self::getDirName(self::$base_dir));
                 $file = str_replace("{{ projectname }}", $pname."/".$pname, $file);
                 file_put_contents(self::$base_dir . "composer.json-dist", $file);
                 iSM::delete(self::$base_dir . "composer.json", "file");
                 iSM::move(self::$base_dir . "composer.json-dist", self::$base_dir . "composer.json");
             }
         }
-    }
 
-    /** Create a readme with project name and creation date
-     * @throws \Exception
-     */
-    final public static function createPersonalizedReadme():int
-    {
         $sentence = "\n----------------------------------\nMy iumio Framework project created ";
         if (!iSM::exist(self::$base_dir."README.md")) {
-            $pname = Server::getDirName(self::$base_dir);
+            $pname = self::getDirName(self::$base_dir);
             if (1 === iSM::create(self::$base_dir."README.md", "file")) {
                 $date = new \DateTime();
                 $date = $date->format("Y-m-d H:i:s");
                 $sentence = ucfirst($pname)." ".$sentence.$date;
                 file_put_contents(self::$base_dir."README.md", $sentence);
-                return (1);
             }
             throw new \Exception("Cannot create README.md");
         }
-        return (0);
     }
 }

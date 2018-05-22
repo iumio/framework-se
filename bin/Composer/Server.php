@@ -81,7 +81,6 @@ class Server
         return (1);
     }
 
-
     /** Copy an element on the server
      * @param string $path Element Path
      * @param string $to Move to
