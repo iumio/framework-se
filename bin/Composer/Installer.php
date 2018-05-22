@@ -272,6 +272,7 @@ class Installer
                 $date = $date->format("Y-m-d H:i:s");
                 $sentence = ucfirst($pname)." ".$sentence.$date;
                 file_put_contents(self::$base_dir."README.md", $sentence);
+                return ;
             }
             throw new \Exception("Cannot create README.md");
         }
