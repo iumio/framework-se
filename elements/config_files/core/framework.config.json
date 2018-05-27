@@ -17,7 +17,6 @@
         "prod" : false
     },
     "default_env": "dev",
-    "api_auth_for": null,
     "deployment": null,
     "location": null,
     "locale_enabled": false
