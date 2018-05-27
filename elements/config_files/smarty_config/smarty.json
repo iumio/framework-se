@@ -7,18 +7,16 @@
         "cache": 0,
         "compile_check": true,
         "force_compile": false,
-        "smarty_debug": false,
-        "console_debug": "off"
+        "smarty_debug": false
     },
     "prod": {
         "cache_directory": "smarty_cache\/",
         "compiled_directory": "smarty_compiled\/",
         "config_directory": "smarty_config\/",
-        "debug": true,
+        "debug": false,
         "cache": 1,
         "compile_check": true,
         "force_compile": false,
-        "smarty_debug": false,
-        "console_debug": "off"
+        "smarty_debug": false
     }
 }

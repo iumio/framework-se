@@ -2,8 +2,8 @@
     "edition_fullname": "Standard Edition",
     "edition_shortname": "SE",
     "edition_stage": "RC",
-    "edition_version": "0.7.9.1",
-    "edition_build": "2017791",
+    "edition_version": "0.9.0",
+    "edition_build": "201790",
     "u3i": "createyoursecretu3i",
     "installation": null,
     "autowiring": true,
@@ -12,7 +12,10 @@
     "200_log": false,
     "taskbar_dev": true,
     "taskbar_prod": false,
-    "debug": false,
+    "debug": {
+        "dev" : true,
+        "prod" : false
+    },
     "default_env": "dev",
     "api_auth_for": null,
     "deployment": null,
