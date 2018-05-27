@@ -169,6 +169,7 @@ class Installer
         }
 
         self::removeFrameworkComponents();
+        self::removeFrameworkAssets();
     }
 
     /** Remove framework components
