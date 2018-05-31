@@ -15,6 +15,7 @@
 namespace iumioFramework\Composer;
 
 use iumioFramework\Composer\Server as iSM;
+use iumioFramework\Core\Requirement\FrameworkCore;
 
 /**
  * Class Installer
@@ -40,6 +41,7 @@ class Installer
         self::moveComponentsDownloadedByComposer();
         self::removeUncessaryFiles();
         self::changeComposerProprietaryAndReadme();
+        self::updateVersionElements();
     }
 
 
@@ -276,6 +278,21 @@ class Installer
                 return ;
             }
             throw new \Exception("Cannot create README.md");
+        }
+    }
+
+    /**
+     * Update the version, build number and stage
+     */
+    final public static function updateVersionElements():void
+    {
+        $file = self::$base_dir . "elements/config_files/core/framework.config.json";
+        if (iSM::exist($file)) {
+            $class = json_decode(file_get_contents($file));
+            $class->edition_stage = FrameworkCore::CORE_STAGE;
+            $class->edition_version = FrameworkCore::CORE_VERSION;
+            $class->edition_build = FrameworkCore::CORE_BUILD;
+            file_put_contents($file, json_encode($class, JSON_PRETTY_PRINT));
         }
     }
 }
