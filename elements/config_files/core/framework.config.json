@@ -1,9 +1,9 @@
 {
     "edition_fullname": "Standard Edition",
     "edition_shortname": "SE",
-    "edition_stage": "RC",
-    "edition_version": "0.9.9",
-    "edition_build": "201799",
+    "edition_stage": "STS",
+    "edition_version": "1.0.0",
+    "edition_build": "201800",
     "u3i": "createyoursecretu3i",
     "installation": null,
     "autowiring": true,
